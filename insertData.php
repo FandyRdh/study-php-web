@@ -1,6 +1,9 @@
 <?php
 require_once "functions.php";
 if (isset($_POST['submit'])) {
+
+    // var_dump($_FILES);
+
     // call function and check insert
     if (tambahData($_POST) > 0) {
         echo "
@@ -13,7 +16,6 @@ if (isset($_POST['submit'])) {
         echo "
         <script>
             alert('Data Gagal Ditambahkan');
-            document.location.href = 'index.php';
         </script>
         ";
     }
@@ -33,7 +35,7 @@ if (isset($_POST['submit'])) {
 <body>
     <div class="container mt-5">
         <h3>Tambah Data</h3>
-        <form action="" method="post">
+        <form action="" method="post" enctype="multipart/form-data">
             <div class="mb-3">
                 <label for="nrp" class="form-label">NRP</label>
                 <input type="text" class="form-control" name="nrp" id="nrp">
@@ -52,10 +54,10 @@ if (isset($_POST['submit'])) {
             </div>
             <div class="mb-3">
                 <label for="gambar" class="form-label">Gambar</label>
-                <input type="gambar" class="form-control" name="gambar" id="gambar">
+                <input class="form-control" type="file" id="formFile" name="gambar">
             </div>
             <button type="submit" class="btn btn-primary" name="submit">Submit</button>
-            <a href="index.php" class="btn btn-secondary">Back</a>f
+            <a href="index.php" class="btn btn-secondary">Back</a>
         </form>
     </div>
 

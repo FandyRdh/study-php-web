@@ -22,7 +22,6 @@ if (isset($_POST['submit'])) {
         echo "
         <script>
             alert('Data Gagal di ubah');
-            document.location.href = 'index.php';
         </script>
         ";
     }
@@ -42,8 +41,9 @@ if (isset($_POST['submit'])) {
 <body>
     <div class="container mt-5">
         <h3>Update Data</h3>
-        <form action="" method="post">
+        <form action="" method="post" enctype="multipart/form-data">
             <input type="hidden" class="form-control" name="id" value="<?= $mhs['id']; ?> " id="nrp">
+            <input type="hidden" class="form-control" name="gambarLama" value="<?= $mhs['gambar']; ?> ">
             <div class="mb-3">
                 <label for="nrp" class="form-label">NRP</label>
                 <input type="text" class="form-control" name="nrp" value="<?= $mhs['nrp']; ?> " id="nrp">
@@ -61,8 +61,9 @@ if (isset($_POST['submit'])) {
                 <input type="text" class="form-control" name="jurusan" value="<?= $mhs['jurusan']; ?>" id="jurusan">
             </div>
             <div class="mb-3">
-                <label for="gambar" class="form-label">Gambar</label>
-                <input type="gambar" class="form-control" name="gambar" value="<?= $mhs['gambar']; ?>" id="gambar">
+                <label for="gambar" class="form-label">Gambar</label><br>
+                <img src="assets/img/<?= $mhs['gambar']; ?>" alt="foto profile" width="100" class="mt-3 mb-3">
+                <input type="file" class="form-control" name="gambar" value="<?= $mhs['gambar']; ?>" id="gambar">
             </div>
             <button type="submit" class="btn btn-primary" name="submit">Submit</button>
             <a href="index.php" class="btn btn-secondary">Back</a>

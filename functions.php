@@ -23,7 +23,12 @@ function tambahData($data)
     $nama = htmlspecialchars($data['nama']);
     $email = htmlspecialchars($data['email']);
     $jurusan = htmlspecialchars($data['jurusan']);
-    $gambar = htmlspecialchars($data['gambar']);
+    // Upload Gambar
+    $gambar = upload();
+    if (!$gambar) {
+        return false;
+    }
+
 
     $query = "INSERT INTO mahasiswa(nrp, nama, email, jurusan, gambar) VALUES ('$nrp','$nama','$email','$jurusan','$gambar');";
     mysqli_query($conn, $query);
@@ -34,14 +39,27 @@ function tambahData($data)
 function updateData($data)
 {
     global $conn;
-    // var_dump($data);
+    // var_dump($_FILES['gambar']);
+    // die;
 
     $id = htmlspecialchars($data['id']);
     $nrp = htmlspecialchars($data['nrp']);
     $nama = htmlspecialchars($data['nama']);
     $email = htmlspecialchars($data['email']);
     $jurusan = htmlspecialchars($data['jurusan']);
-    $gambar = htmlspecialchars($data['gambar']);
+
+    // Check Perubahan Gambar
+    if ($_FILES['gambar']['error'] === 4) {
+        $gambar = htmlspecialchars($data['gambarLama']);
+    } else {
+        // Upload Gambar
+        $gambar = upload();
+        if (!$gambar) {
+            return false;
+        }
+    }
+
+
 
     $query = "UPDATE mahasiswa SET nrp='$nrp',nama='$nama',email='$email',jurusan='$jurusan',gambar='$gambar' WHERE id='$id';";
 
@@ -49,6 +67,63 @@ function updateData($data)
 
     return mysqli_affected_rows($conn);
 }
+
+function upload()
+{
+    $namaFile = $_FILES['gambar']['name'];
+    $ukuranFile = $_FILES['gambar']['size'];
+    $error = $_FILES['gambar']['error'];
+    $tmpName = $_FILES['gambar']['tmp_name'];
+
+    // Check apakah berhasil di upload
+    if ($error != 0) {
+        echo "
+            <script>
+            alert('Pilih Gambar Terlebih dahulu');
+            </script>
+        ";
+        return false;
+    }
+
+    // Check Jenis file/extensi file
+    $extensiGambarValid = ['jpg', 'jpeg', 'png'];
+    $extensiGambar = explode('.', $namaFile);
+    $extensiGambar = strtolower(end($extensiGambar));
+    if (!in_array($extensiGambar, $extensiGambarValid)) {
+        echo "
+            <script>
+            alert('Pilih Gambar format jpg,png,jpeg');
+            </script>
+        ";
+        return false;
+    }
+
+
+    // Check Ukuran file
+    if ($ukuranFile > 2000000) {
+        echo "
+            <script>
+                alert('Max gambar 2MB');
+            </script>
+        ";
+        return false;
+    }
+
+    // Lolos Pengecekan
+
+    // Generate Nama File
+    $namaFileBaru = uniqid();
+    $namaFileBaru .= '.';
+    $namaFileBaru .= $extensiGambar;
+
+
+    // Simpan File
+    move_uploaded_file($tmpName, 'assets/img/' . $namaFile);
+
+    return $namaFile;
+}
+
+
 
 function hapusData($id)
 {
