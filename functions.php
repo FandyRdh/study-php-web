@@ -1,7 +1,6 @@
 <?php
 $conn = mysqli_connect("localhost", "root", "", "phpdasar");
 
-
 function query($query)
 {
     global $conn;
@@ -95,7 +94,6 @@ function upload()
         ";
         return false;
     }
-
 
     // Check Ukuran file
     if ($ukuranFile > 2000000) {
