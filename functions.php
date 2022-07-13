@@ -59,8 +59,6 @@ function updateData($data)
         }
     }
 
-
-
     $query = "UPDATE mahasiswa SET nrp='$nrp',nama='$nama',email='$email',jurusan='$jurusan',gambar='$gambar' WHERE id='$id';";
 
     mysqli_query($conn, $query);
@@ -79,7 +77,7 @@ function upload()
     if ($error != 0) {
         echo "
             <script>
-            alert('Pilih Gambar Terlebih dahulu');
+              alert('Pilih Gambar Terlebih dahulu');
             </script>
         ";
         return false;
@@ -92,7 +90,7 @@ function upload()
     if (!in_array($extensiGambar, $extensiGambarValid)) {
         echo "
             <script>
-            alert('Pilih Gambar format jpg,png,jpeg');
+                alert('Pilih Gambar format jpg,png,jpeg');
             </script>
         ";
         return false;
@@ -144,4 +142,46 @@ function cariData($keyword)
             jurusan LIKE '%$keyword%';";
 
     return query($query);
+}
+
+function registrasi($data)
+{
+    global $conn;
+
+    $username = strtolower(stripslashes($data['username']));
+    $password = mysqli_real_escape_string($conn, $data['password']);
+    $password2 = mysqli_real_escape_string($conn, $data['password2']);
+
+
+    // Chcek usernam sudah digunakan atau belum
+    $result = mysqli_query($conn, "SELECT username FROM user WHERE username = '$username';");
+
+    // Jika ada maka true
+    if (mysqli_fetch_assoc($result)) {
+        echo "
+        <script>
+            alert('username sudah digunakan');
+        </script>";
+        return false;
+    }
+
+    // Cek Konfirmasi
+    if ($password != $password2) {
+        echo "
+        <script>
+            alert('password tidak sesuai');
+        </script>";
+        return false;
+    }
+
+    // Enkripsi Password
+    $password = password_hash($password, PASSWORD_DEFAULT);
+    // var_dump($password);
+
+
+    // Insert Data
+    $query = "INSERT INTO user(username, password) VALUES ('$username','$password');";
+    mysqli_query($conn, $query);
+
+    return mysqli_affected_rows($conn);
 }
