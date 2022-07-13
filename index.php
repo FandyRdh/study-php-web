@@ -1,4 +1,16 @@
 <?php
+session_start();
+if (!isset($_SESSION['login'])) {
+    header("Location: login.php");
+    exit;
+    // echo "
+    // <script>
+    //     alert('salah');
+    // </script>
+    // ";
+}
+
+
 require_once("functions.php");
 if (isset($_POST['keyword'])) {
     $mahasiswa = cariData($_POST['keyword']);
@@ -30,6 +42,7 @@ if (isset($_POST['keyword'])) {
 <body>
     <div class="container">
         <h1>Data Mahasiswa</h1>
+        <a href="logout.php" class="btn btn-primary">Logout</a>
         <a href="insertData.php" class="btn btn-primary">Tambah Data</a>
         <form action="" method="post" class="row g-3 mt-2">
             <div class="col-auto ">

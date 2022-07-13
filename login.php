@@ -1,16 +1,40 @@
 <?php
+session_start();
 require_once "functions.php";
 
-if (isset($_POST['register'])) {
-    if (registrasi($_POST)) {
-        echo "
-            <script>
-                alert('Data Berhasil di tambahkan');
-            </script>
-            ";
-    } else {
-        echo mysqli_error($conn);
+if (isset($_SESSION['login'])) {
+    header("Location: index.php");
+    exit;
+}
+
+if (isset($_POST['login'])) {
+    $username = $_POST['username'];
+    $password = $_POST['password'];
+
+    $result = mysqli_query($conn, "SELECT * FROM user WHERE username = '$username'");
+
+    // CEK USERNAME
+    if (mysqli_num_rows($result) === 1) {
+        // CEK PASSWORD
+        $row = mysqli_fetch_assoc($result);
+        if (password_verify($password, $row['password'])) {
+            // Set session
+            $_SESSION["login"] = true;
+
+            header("Location: index.php");
+            exit;
+        }
     }
+    $error = true;
+}
+
+
+if (isset($error)) {
+    echo "
+    <script>
+        alert('Password atau username salah');
+    </script>
+    ";
 }
 ?>
 
@@ -27,7 +51,7 @@ if (isset($_POST['register'])) {
 <body>
     <div class="container  p-5">
         <center>
-            <h3>Register User</h3>
+            <h3>Login</h3>
         </center>
         <form action="" method="post">
             <div class="mb-3">
@@ -38,11 +62,11 @@ if (isset($_POST['register'])) {
                 <label for="inputPassword" class="form-label">Password</label>
                 <input type="password" class="form-control" id="inputPassword" name="password">
             </div>
-            <div class="mb-3">
-                <label for="inputPassword2" class="form-label">Confirm Password</label>
-                <input type="password" class="form-control" id="inputPassword2" name="password2">
+            <div class="mb-3 form-check">
+                <input type="checkbox" class="form-check-input" id="exampleCheck1">
+                <label class="form-check-label" name="remember" for="exampleCheck1">Remember Me</label>
             </div>
-            <button type="submit" class="btn btn-primary" name="register">Register</button>
+            <button type="submit" class="btn btn-primary" name="login">Login</button>
         </form>
     </div>
 
